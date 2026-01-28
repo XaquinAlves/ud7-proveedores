@@ -49,7 +49,7 @@ class ProveedorController extends BaseController
 
         if (isset($data['pais']) && !filter_var($data['pais'], FILTER_VALIDATE_INT)) {
             $errors['pais'] = 'El pais debe ser un numero entero correspondiente al id_pais';
-        } elseif (isset($data['pais']) && !((new AuxCountriesModel())->existsCountry($data['pais']))) {
+        } elseif (isset($data['pais']) && !((new AuxCountriesModel())->existsCountry((int)$data['pais']))) {
             $errors['pais'] = 'El pais no existe';
         }
 
