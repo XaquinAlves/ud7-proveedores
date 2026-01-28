@@ -14,7 +14,7 @@ class ProveedorModel extends BaseDbModel
                 FROM proveedor as prv LEFT JOIN aux_countries as pais ON prv.id_country = pais.id';
     private const LIMIT = 20;
 
-    public function getProveedorByFilters(array $filters): array|false
+    public function getProveedorByFilters(array $filters): array
     {
         $sql = self::SELECT_FROM;
         $query = $this->buildQuery($filters);
@@ -25,7 +25,7 @@ class ProveedorModel extends BaseDbModel
         }
 
         $sql .= ' ORDER BY ' . $this->getOrder($filters);
-        $sql .= 'LIMIT' . $this->getPage($filters) . ',' . self::LIMIT;
+        $sql .= ' LIMIT ' . $this->getPage($filters) . ',' . self::LIMIT;
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($query['params']);
@@ -70,6 +70,21 @@ class ProveedorModel extends BaseDbModel
         } else {
             return (int)$filters['page'];
         }
+    }
+
+    public function getLastPage(array $filters): int
+    {
+        $sql = "SELECT COUNT(*) FROM proveedor";
+        $query = $this->buildQuery($filters);
+
+        if (count($query['conditions']) > 0) {
+            $stringConditions = implode(' AND ', $query['conditions']);
+            $sql .= " WHERE {$stringConditions}";
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        $numRows = $stmt->execute($query['params']);
+        return (int)ceil($numRows / self::LIMIT);
     }
 
     public function getOrder(array $filters): string

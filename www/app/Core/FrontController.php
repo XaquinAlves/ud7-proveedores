@@ -27,6 +27,7 @@ class FrontController
         Route::add('/proveedor', function () {
             if (self::$user !== false && str_contains(self::$user['permisos']['proveedor'], 'r')) {
                 $controller = new ProveedorController();
+                $controller->getProveedorByFilters();
             } else {
                 http_response_code(403);
             }
