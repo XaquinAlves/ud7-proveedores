@@ -59,7 +59,7 @@ class ProveedorController extends BaseController
             isset($data['page']) &&
             ($data['page'] < 0 || $data['page'] > (new ProveedorModel())->getLastPage($data))
         ) {
-            $errors['page'] = 'La pagina no existe';
+            $errors['page'] = 'La pagina no existe, ultima pagina ' . (new ProveedorModel())->getLastPage($data);
         }
 
         if (

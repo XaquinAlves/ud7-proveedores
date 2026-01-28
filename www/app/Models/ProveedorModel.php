@@ -83,7 +83,8 @@ class ProveedorModel extends BaseDbModel
         }
 
         $stmt = $this->pdo->prepare($sql);
-        $numRows = $stmt->execute($query['params']);
+        $stmt->execute($query['params']);
+        $numRows = (int)$stmt->fetchColumn();
         return (int)ceil($numRows / self::LIMIT);
     }
 
