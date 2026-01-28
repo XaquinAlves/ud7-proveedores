@@ -14,6 +14,9 @@ class UsuarioSistemaModel extends BaseDbModel
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['id' => $id]);
         $usuario = $stmt->fetch();
+        if ($usuario !== false) {
+            $usuario['permisos'] = $this->getPermisos($usuario['id_rol']);
+        }
         return $usuario;
     }
 
@@ -24,5 +27,18 @@ class UsuarioSistemaModel extends BaseDbModel
         $stmt->execute(['email' => $email]);
         $usuario = $stmt->fetch();
         return $usuario;
+    }
+
+    public function getPermisos(int $id_rol): array
+    {
+        if ($id_rol == 1) {
+            $permisos = ['proveedor' => 'rwd'];
+        } elseif ($id_rol == 2) {
+            $permisos = ['proveedor' => 'r'];
+        } elseif ($id_rol == 3) {
+            $permisos = ['proveedor' => 'rwd'];
+        }
+
+        return $permisos;
     }
 }

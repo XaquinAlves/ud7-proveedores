@@ -2,6 +2,7 @@
 
 namespace Com\Daw2\Core;
 
+use Com\Daw2\Controllers\ProveedorController;
 use Com\Daw2\Controllers\UsuarioSistemaController;
 use Com\Daw2\Libraries\JWTHelper;
 use Com\Daw2\Models\UsuarioSistemaModel;
@@ -22,6 +23,14 @@ class FrontController
             $controller = new UsuarioSistemaController();
             $controller->login();
         }, 'post');
+
+        Route::add('/proveedor', function () {
+            if (str_contains('r', self::$user['permisos']['proveedor'])) {
+                $controller = new ProveedorController();
+            } else {
+                http_response_code(403);
+            }
+        }, 'get');
 
         Route::pathNotFound(
             function () {
