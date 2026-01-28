@@ -53,13 +53,13 @@ class ProveedorController extends BaseController
             $errors['pais'] = 'El pais no existe';
         }
 
-        if (isset($data['page']) && !filter_var($data['page'], FILTER_VALIDATE_INT)) {
+        if (isset($data['page']) && $data['page'] != 0 && !filter_var($data['page'], FILTER_VALIDATE_INT)) {
             $errors['page'] = 'La pagina debe ser un numero entero';
         } elseif (
             isset($data['page']) &&
             ($data['page'] < 0 || $data['page'] > (new ProveedorModel())->getLastPage($data))
         ) {
-            $errors['page'] = 'La pagina no existe, ultima pagina ' . (new ProveedorModel())->getLastPage($data);
+            $errors['page'] = 'La pagina no existe, paginas de 0 a ' . (new ProveedorModel())->getLastPage($data);
         }
 
         if (
