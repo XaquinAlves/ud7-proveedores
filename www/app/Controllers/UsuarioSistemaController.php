@@ -7,14 +7,14 @@ namespace Com\Daw2\Controllers;
 use Com\Daw2\Core\BaseController;
 use Com\Daw2\Libraries\JWTHelper;
 use Com\Daw2\Libraries\Respuesta;
-use Com\Daw2\Models\UsuariosSistemaModel;
+use Com\Daw2\Models\UsuarioSistemaModel;
 
-class UsuariosSistemaController extends BaseController
+class UsuarioSistemaController extends BaseController
 {
     public function login(): void
     {
         if (!empty($_POST['email']) && !empty($_POST['password'])) {
-            $model = new UsuariosSistemaModel();
+            $model = new UsuarioSistemaModel();
             $usuario = $model->findByEmail($_POST['email']);
 
             if ($usuario === false) {

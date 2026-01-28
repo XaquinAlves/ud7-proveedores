@@ -2,9 +2,9 @@
 
 namespace Com\Daw2\Core;
 
-use Com\Daw2\Controllers\UsuariosSistemaController;
+use Com\Daw2\Controllers\UsuarioSistemaController;
 use Com\Daw2\Libraries\JWTHelper;
-use Com\Daw2\Models\UsuariosSistemaModel;
+use Com\Daw2\Models\UsuarioSistemaModel;
 use Com\Daw2\Traits\JwtTool;
 use Steampixel\Route;
 
@@ -16,10 +16,10 @@ class FrontController
         if (JwtTool::requestHasToken()) {
             $token = JwtTool::getBearerToken();
             $payload = (new JWTHelper())->decodeToken($token);
-            self::$user = (new UsuariosSistemaModel())->findById($payload['id_usuario']);
+            self::$user = (new UsuarioSistemaModel())->findById($payload['id_usuario']);
         }
         Route::add('/login', function () {
-            $controller = new UsuariosSistemaController();
+            $controller = new UsuarioSistemaController();
             $controller->login();
         }, 'post');
 

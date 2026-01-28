@@ -6,11 +6,11 @@ namespace Com\Daw2\Models;
 
 use Com\Daw2\Core\BaseDbModel;
 
-class UsuariosSistemaModel extends BaseDbModel
+class UsuarioSistemaModel extends BaseDbModel
 {
     public function findById(int $id): array|false
     {
-        $sql = "SELECT * FROM usuarios_sistema WHERE id = :id";
+        $sql = "SELECT * FROM usuario_sistema WHERE id = :id";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['id' => $id]);
         $usuario = $stmt->fetch();
@@ -19,7 +19,7 @@ class UsuariosSistemaModel extends BaseDbModel
 
     public function findByEmail(string $email): array|false
     {
-        $sql = "SELECT * FROM usuarios_sistema WHERE email = :email";
+        $sql = "SELECT * FROM usuario_sistema WHERE email = :email";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['email' => $email]);
         $usuario = $stmt->fetch();

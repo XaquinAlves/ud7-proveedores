@@ -1,5 +1,6 @@
 <?php
-/* 
+
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,28 +21,22 @@
 
 namespace Com\Daw2\Traits;
 
-use function Com\Daw2\Helpers\apache_request_headers;
-use function Com\Daw2\Helpers\array_combine;
-use function Com\Daw2\Helpers\function_exists;
-use function Com\Daw2\Helpers\is_null;
-use function Com\Daw2\Helpers\preg_match;
-use function Com\Daw2\Helpers\trim;
-
 /**
  * Utility trait for handling JSON Web Tokens (JWT) in HTTP requests.
  */
-trait JwtTool{
-
-    public static function requestHasToken() : bool{
+trait JwtTool
+{
+    public static function requestHasToken(): bool
+    {
         return !is_null(self::getBearerToken());
     }
 
-    private static function getAuthorizationHeader() : ?string{
+    private static function getAuthorizationHeader(): ?string
+    {
         $headers = null;
         if (isset($_SERVER['Authorization'])) {
             $headers = trim($_SERVER["Authorization"]);
-        }
-        else if (isset($_SERVER['HTTP_AUTHORIZATION'])) { //Nginx or fast CGI
+        } elseif (isset($_SERVER['HTTP_AUTHORIZATION'])) { //Nginx or fast CGI
             $headers = trim($_SERVER["HTTP_AUTHORIZATION"]);
         } elseif (function_exists('apache_request_headers')) {
             $requestHeaders = apache_request_headers();
@@ -57,7 +52,8 @@ trait JwtTool{
     /**
      * get access token from header
      * */
-    public static function getBearerToken() : ?string{
+    public static function getBearerToken(): ?string
+    {
         $headers = self::getAuthorizationHeader();
         // HEADER: Get the access token from the header
         if (!is_null($headers) && !empty($headers)) {
@@ -69,4 +65,3 @@ trait JwtTool{
         return null;
     }
 }
-
