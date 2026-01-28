@@ -10,12 +10,12 @@ class UsuarioSistemaModel extends BaseDbModel
 {
     public function findById(int $id): array|false
     {
-        $sql = "SELECT * FROM usuario_sistema WHERE id = :id";
+        $sql = "SELECT * FROM usuario_sistema WHERE id_usuario = :id";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['id' => $id]);
         $usuario = $stmt->fetch();
         if ($usuario !== false) {
-            $usuario['permisos'] = $this->getPermisos($usuario['id_rol']);
+            $usuario['permisos'] = $this->getPermisos((int)$usuario['id_rol']);
         }
         return $usuario;
     }

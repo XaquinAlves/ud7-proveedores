@@ -32,11 +32,11 @@ class ProveedorModel extends BaseDbModel
         return $stmt->fetchAll();
     }
 
-    public function getProveedorById(int $id): array|false
+    public function getProveedorByCif(string $cif): array|false
     {
-        $sql = self::SELECT_FROM . " WHERE prv.id = :id";
+        $sql = self::SELECT_FROM . " WHERE prv.cif = :cif";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['id' => $id]);
+        $stmt->execute(['cif' => $cif]);
         return $stmt->fetch();
     }
 
