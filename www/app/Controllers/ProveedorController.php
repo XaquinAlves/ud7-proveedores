@@ -69,6 +69,10 @@ class ProveedorController extends BaseController
             $errors['order'] = 'El orden debe ser un numero entero entre 1 y 4';
         }
 
+        if (isset($data['sentido']) && $data['sentido'] !== 'asc' && $data['sentido'] !== 'desc') {
+            $errors['sentido'] = 'El sentido debe ser asc o desc';
+        }
+
         return $errors;
     }
 }

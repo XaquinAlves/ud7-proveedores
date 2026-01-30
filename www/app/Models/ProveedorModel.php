@@ -25,6 +25,9 @@ class ProveedorModel extends BaseDbModel
         }
 
         $sql .= ' ORDER BY ' . $this->getOrder($filters);
+        if (!empty($filters['sentido'])) {
+            $sql .= ' ' . $filters['sentido'];
+        }
         $sql .= ' LIMIT ' . $this->getPage($filters) . ',' . self::LIMIT;
 
         $stmt = $this->pdo->prepare($sql);
