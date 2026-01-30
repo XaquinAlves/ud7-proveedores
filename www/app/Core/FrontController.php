@@ -5,9 +5,11 @@ namespace Com\Daw2\Core;
 use Com\Daw2\Controllers\ProveedorController;
 use Com\Daw2\Controllers\UsuarioSistemaController;
 use Com\Daw2\Libraries\JWTHelper;
+use Com\Daw2\Libraries\Respuesta;
 use Com\Daw2\Models\UsuarioSistemaModel;
 use Com\Daw2\Traits\JwtTool;
 use Steampixel\Route;
+use Ahc\Jwt\JWTException;
 
 class FrontController
 {
@@ -15,9 +17,13 @@ class FrontController
     public static function main(): void
     {
         if (JwtTool::requestHasToken()) {
-            $token = JwtTool::getBearerToken();
-            $payload = (new JWTHelper())->decodeToken($token);
-            self::$user = (new UsuarioSistemaModel())->findById($payload['id_usuario']);
+            try {
+                $token = JwtTool::getBearerToken();
+                $payload = (new JWTHelper())->decodeToken($token);
+                self::$user = (new UsuarioSistemaModel())->findById($payload['id_usuario']);
+            } catch (JWTException $e) {
+                header('HTTP/1.1 403 Forbidden, ' . $e->getMessage(), true, 403);
+            }
         }
         Route::add('/login', function () {
             $controller = new UsuarioSistemaController();
