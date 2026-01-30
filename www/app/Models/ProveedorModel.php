@@ -43,6 +43,28 @@ class ProveedorModel extends BaseDbModel
         return $stmt->fetch();
     }
 
+    public function getProveedorByCodigo(string $codigo): array|false
+    {
+        $sql = self::SELECT_FROM . " WHERE prv.codigo = :codigo";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['codigo' => $codigo]);
+        return $stmt->fetch();
+    }
+
+    public function insertProveedor(array $data): bool
+    {
+        $sql = "INSERT INTO proveedor (cif, codigo, nombre, direccion, website, email, telefono, id_country)
+            VALUES (:cif, :codigo, :nombre, :direccion, :website, :email, :telefono, :id_country)";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute($data);
+    }
+
+    public function updateProveedor(string $cif, array $data): bool
+    {
+        $sql = "UPDATE proveedor ";
+        return false;
+    }
+
     private function buildQuery(array $filters): array
     {
         $params = [];
