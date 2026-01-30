@@ -62,7 +62,57 @@ class ProveedorModel extends BaseDbModel
     public function updateProveedor(string $cif, array $data): bool
     {
         $sql = "UPDATE proveedor ";
-        return false;
+        $params = [];
+        $conditions = [];
+
+        if (isset($data['cif'])) {
+            $conditions[] = "cif = :cifNuevo ";
+            $params['cifNuevo'] = $cif;
+        }
+
+        if (isset($data['codigo'])) {
+            $conditions[] = "codigo = :codigo ";
+            $params['codigo'] = $data['codigo'];
+        }
+
+        if (isset($data['nombre'])) {
+            $conditions[] = "nombre = :nombre ";
+            $params['nombre'] = $data['nombre'];
+        }
+
+        if (isset($data['direccion'])) {
+            $conditions[] = "direccion = :direccion ";
+            $params['direccion'] = $data['direccion'];
+        }
+
+        if (isset($data['web'])) {
+            $conditions[] = "website = :website ";
+            $params['website'] = $data['web'];
+        }
+
+        if (isset($data['email'])) {
+            $conditions[] = "email = :email ";
+            $params['email'] = $data['email'];
+        }
+
+        if (isset($data['telefono'])) {
+            $conditions[] = "telefono = :telefono ";
+            $params['telefono'] = $data['telefono'];
+        }
+
+        if (isset($data['pais'])) {
+            $conditions[] = "id_country = :pais ";
+            $params['pais'] = $data['pais'];
+        }
+
+        if (count($conditions) > 0) {
+            $sql .= "SET " . implode(', ', $conditions) . ' WHERE cif = :cifViejo ';
+            $params['cifViejo'] = $cif;
+            $stmt = $this->pdo->prepare($sql);
+            return $stmt->execute($params);
+        } else {
+            return true;
+        }
     }
 
     private function buildQuery(array $filters): array
