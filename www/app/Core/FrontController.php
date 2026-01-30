@@ -14,6 +14,7 @@ use Ahc\Jwt\JWTException;
 class FrontController
 {
     private static false|array $user = false;
+
     public static function main(): void
     {
         if (JwtTool::requestHasToken()) {
@@ -26,14 +27,12 @@ class FrontController
             }
         }
         Route::add('/login', function () {
-            $controller = new UsuarioSistemaController();
-            $controller->login();
+            (new UsuarioSistemaController())->login();
         }, 'post');
 
         Route::add('/proveedor', function () {
             if (self::$user !== false && str_contains(self::$user['permisos']['proveedor'], 'r')) {
-                $controller = new ProveedorController();
-                $controller->getProveedorByFilters();
+                (new ProveedorController())->getProveedorByFilters();
             } else {
                 http_response_code(403);
             }
@@ -41,8 +40,7 @@ class FrontController
 
         Route::add('/proveedor/([A-Z][0-9]{7}[A-Z])', function ($cif) {
             if (self::$user !== false && str_contains(self::$user['permisos']['proveedor'], 'r')) {
-                $controller = new ProveedorController();
-                $controller->getProveedorByCif($cif);
+                (new ProveedorController())->getProveedorByCif($cif);
             } else {
                 http_response_code(403);
             }
