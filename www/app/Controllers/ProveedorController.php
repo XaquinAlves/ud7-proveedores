@@ -119,6 +119,30 @@ class ProveedorController extends BaseController
         }
     }
 
+    public function postProveedor(): void
+    {
+        $errors = $this->checkErrorsPostPatch($_POST);
+        try {
+            if ($errors !== []) {
+                $respuesta = new Respuesta(400);
+                $respuesta->setData(['errores' => $errors]);
+            } else {
+                $model = new ProveedorModel();
+                $cif = $model->insertProveedor($_POST);
+                $respuesta = new Respuesta(201);
+            }
+        } catch (\PDOException $e) {
+            if ($e->getCode() === 23000) {
+                $respuesta = new Respuesta(409);
+                $respuesta->setData(['mensaje' => 'Ya existe un proveedor con ese codigo o cif']);
+            } else {
+                throw $e;
+            }
+        }
+
+        $this->view->show('json.view.php', ['respuesta' => $respuesta]);
+    }
+
     public function checkErrorsPostPatch(array $data, ?string $cif = null): array
     {
         $errors = [];

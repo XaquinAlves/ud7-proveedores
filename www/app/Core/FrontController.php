@@ -46,6 +46,14 @@ class FrontController
             }
         }, 'get');
 
+        Route::add('/proveedor', function () {
+            if (self::$user !== false && str_contains(self::$user['permisos']['proveedor'], 'w')) {
+                (new ProveedorController())->postProveedor();
+            } else {
+                http_response_code(403);
+            }
+        }, 'post');
+
         Route::add('/proveedor/([A-Z][0-9]{7}[A-Z])', function ($cif) {
             if (self::$user !== false && str_contains(self::$user['permisos']['proveedor'], 'd')) {
                 (new ProveedorController())->deleteProveedor($cif);
