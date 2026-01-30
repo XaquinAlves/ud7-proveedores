@@ -45,17 +45,17 @@ class ProveedorModel extends BaseDbModel
         $params = [];
         $conditions = [];
 
-        if (isset($filters['nombre'])) {
+        if (!empty($filters['nombre'])) {
             $conditions[] = "nombre LIKE :nombre";
             $params['nombre'] = "%{$filters['nombre']}%";
         }
 
-        if (isset($filters['pais'])) {
+        if (!empty($filters['pais'])) {
             $conditions[] = "id_country = :pais";
             $params['pais'] = $filters['pais'];
         }
 
-        if (isset($filters['email'])) {
+        if (!empty($filters['email'])) {
             $conditions[] = "email LIKE :email";
             $params['email'] = "%{$filters['email']}%";
         }
