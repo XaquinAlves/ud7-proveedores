@@ -75,4 +75,25 @@ class ProveedorController extends BaseController
 
         return $errors;
     }
+
+    public function deleteProveedor(string $cif): void
+    {
+        $model = new ProveedorModel();
+        try {
+            if ($model->deleteProveedor($cif)) {
+                $respuesta = new Respuesta(200);
+            } else {
+                $respuesta = new Respuesta(404);
+                $respuesta->setData(['mensaje' => 'El proveedor no existe']);
+            }
+        } catch (\PDOException $e) {
+            if ($e->getCode() === 23000) {
+                $respuesta = new Respuesta(409);
+                $respuesta->setData(['mensaje' => 'El proveedor tiene artículos asociados']);
+            } else {
+                throw $e;
+            }
+        }
+        $this->view->show('json.view.php', ['respuesta' => $respuesta]);
+    }
 }

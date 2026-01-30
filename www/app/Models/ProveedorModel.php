@@ -102,4 +102,11 @@ class ProveedorModel extends BaseDbModel
             return self::ORDER_BY[$filters['order'] - 1];
         }
     }
+
+    public function deleteProveedor(string $cif): bool
+    {
+        $sql = "DELETE FROM proveedor WHERE cif = :cif";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute(['cif' => $cif]);
+    }
 }
