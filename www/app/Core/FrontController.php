@@ -12,7 +12,7 @@ use Ahc\Jwt\JWTException;
 
 class FrontController
 {
-    private static false|array $user = false;
+    public static false|array $user = false;
 
     public static function main(): void
     {
@@ -79,7 +79,7 @@ class FrontController
         } catch (JWTException $e) {
             $respuesta = new Respuesta(403);
             $respuesta->setData(['mensaje' => $e->getMessage()]);
-            (new View())->show('json.view.php', ['respuesta' => $respuesta]);
+            (new View('FrontController'))->show('json.view.php', ['respuesta' => $respuesta]);
         }
     }
 }
