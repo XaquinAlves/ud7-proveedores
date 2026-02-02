@@ -9,6 +9,7 @@ use Com\Daw2\Libraries\Respuesta;
 use Com\Daw2\Models\AuxCountriesModel;
 use Com\Daw2\Models\ProveedorModel;
 use Com\Daw2\Traits\BaseRestController;
+use PDOException;
 
 class ProveedorController extends BaseController
 {
@@ -89,7 +90,7 @@ class ProveedorController extends BaseController
                 $respuesta = new Respuesta(404);
                 $respuesta->setData(['mensaje' => 'El proveedor no existe']);
             }
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             if ($e->getCode() === 23000) {
                 $respuesta = new Respuesta(409);
                 $respuesta->setData(['mensaje' => 'El proveedor tiene artículos asociados']);
@@ -117,7 +118,7 @@ class ProveedorController extends BaseController
                     $respuesta = new Respuesta(404);
                     $respuesta->setData(['mensaje' => 'Proveedor ' . $cif . ' no encontrado']);
                 }
-            } catch (\PDOException $e) {
+            } catch (PDOException $e) {
                 if ($e->getCode() === 23000) {
                     $respuesta = new Respuesta(409);
                     $respuesta->setData(['mensaje' => 'Ya existe un proveedor con ese codigo o cif']);
@@ -142,7 +143,7 @@ class ProveedorController extends BaseController
                 $respuesta = new Respuesta(201);
                 $respuesta->setData(['cif' => $cif]);
             }
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             if ($e->getCode() === 23000) {
                 $respuesta = new Respuesta(409);
                 $respuesta->setData(['mensaje' => 'Ya existe un proveedor con ese codigo o cif']);

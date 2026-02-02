@@ -2,6 +2,8 @@
 
 namespace Com\Daw2\Core;
 
+use Exception;
+
 class View
 {
     private string $controller;
@@ -13,7 +15,7 @@ class View
 
     public function show(string $name, $vars = array()): void
     {
-        //$name - nombre de nuestra plantilla, por ej, listar.php
+        //$name - nombre de nuestra plantilla, por ej., listar.php
         //$vars - contenedor de variables,
         //   es un array del tipo clave => valor (opcional).
         //Cogemos una instancia de nuestra clase de configuracion.
@@ -22,8 +24,8 @@ class View
         $path = $_ENV['folder.views'] . $name;
 
         //Si no existe el fichero en cuestion, lanzamos una excepción
-        if (file_exists($path) == false) {
-            throw new \Exception('La plantilla ' . $path . ' no existe');
+        if (!file_exists($path)) {
+            throw new Exception('La plantilla ' . $path . ' no existe');
         }
 
         //Si hay variables para asignar, las pasamos una a una.
@@ -33,7 +35,8 @@ class View
             }
         }
 
-        //Necesario para saber en la vista qué controlador hemos cargado y así por ejemplo marcar en la barra izquierda la sección en la que estamos
+        //Necesario para saber en la vista qué controlador hemos cargado y
+        //así por ejemplo marcar en la barra izquierda la sección en la que estamos
         $controller = $this->controller;
         //Finalmente, incluimos la plantilla.
         include($path);
@@ -41,7 +44,7 @@ class View
 
     public function showViews(array $views, $vars = array()): void
     {
-        //$name - nombre de nuestra plantilla, por ej, listar.php
+        //$name - nombre de nuestra plantilla, por ej., listar.php
         //$vars - contenedor de variables,
         //   es un array del tipo clave => valor (opcional).
         //Cogemos una instancia de nuestra clase de configuracion.
@@ -51,8 +54,8 @@ class View
             $path = $_ENV['folder.views'] . $v;
 
             //Si no existe el fichero en cuestion, lanzamos una excepción
-            if (file_exists($path) == false) {
-                throw new \Exception('La plantilla ' . $path . ' no existe');
+            if (!file_exists($path)) {
+                throw new Exception('La plantilla ' . $path . ' no existe');
             }
         }
 
@@ -63,7 +66,8 @@ class View
             }
         }
 
-        //Necesario para saber en la vista qué controlador hemos cargado y así por ejemplo marcar en la barra izquierda la sección en la que estamos
+        //Necesario para saber en la vista qué controlador hemos cargado
+        //y así por ejemplo marcar en la barra izquierda la sección en la que estamos
         $controller = $this->controller;
         foreach ($views as $v) {
             $path = $_ENV['folder.views'] . $v;

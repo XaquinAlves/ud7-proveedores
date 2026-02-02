@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Com\Daw2\Libraries;
 
+use Exception;
+
 class Respuesta
 {
     private int $status;
@@ -11,15 +13,15 @@ class Respuesta
 
     public function __construct(int $status)
     {
-        if ($status >= 200 || $status < 600) {
+        if ($status >= 200 && $status < 600) {
             $this->status = $status;
             $this->data = null;
         } else {
-            throw new \Exception("Status no válido");
+            throw new Exception("Status no válido");
         }
     }
 
-    public function setData(?array $data)
+    public function setData(?array $data): void
     {
         $this->data = $data;
     }

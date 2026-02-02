@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Com\Daw2\Controllers;
 
 use Com\Daw2\Core\BaseController;
-use Com\Daw2\Core\FrontController;
 use Com\Daw2\Libraries\JWTHelper;
 use Com\Daw2\Libraries\Respuesta;
 use Com\Daw2\Models\UsuarioSistemaModel;
 use Com\Daw2\Traits\BaseRestController;
+use Exception;
 
 class UsuarioSistemaController extends BaseController
 {
@@ -70,7 +70,7 @@ class UsuarioSistemaController extends BaseController
             $usuario = $model->findById($id_usuario);
 
             if ($usuario === false) {
-                throw new \Exception('Usuario no encontrado');
+                throw new Exception('Usuario no encontrado');
             } else {
                 if (!password_verify($put['old_password'], $usuario['pass'])) {
                     $errors['old_password'] = "La contraseña antigua no coincide con la guardada";

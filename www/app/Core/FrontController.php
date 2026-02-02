@@ -38,14 +38,14 @@ class FrontController
                 } else {
                     http_response_code(403);
                 }
-            }, 'get');
+            });
             Route::add('/proveedor/([A-Z][0-9]{7}[A-Z])', function ($cif) {
                 if (in_array('proveedor.get', self::$user['permisos'])) {
                     (new ProveedorController())->getProveedorByCif($cif);
                 } else {
                     http_response_code(403);
                 }
-            }, 'get');
+            });
             Route::add('/proveedor', function () {
                 if (in_array('proveedor.post', self::$user['permisos'])) {
                     (new ProveedorController())->postProveedor();

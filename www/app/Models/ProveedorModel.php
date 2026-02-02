@@ -21,7 +21,7 @@ class ProveedorModel extends BaseDbModel
 
         if (count($query['conditions']) > 0) {
             $stringConditions = implode(' AND ', $query['conditions']);
-            $sql .= " WHERE {$stringConditions}";
+            $sql .= " WHERE $stringConditions";
         }
 
         $sql .= ' ORDER BY ' . $this->getOrder($filters);
@@ -165,7 +165,7 @@ class ProveedorModel extends BaseDbModel
 
         if (count($query['conditions']) > 0) {
             $stringConditions = implode(' AND ', $query['conditions']);
-            $sql .= " WHERE {$stringConditions}";
+            $sql .= " WHERE $stringConditions";
         }
 
         $stmt = $this->pdo->prepare($sql);

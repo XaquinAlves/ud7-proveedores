@@ -13,11 +13,7 @@ class UsuarioSistemaModel extends BaseDbModel
         $sql = "SELECT * FROM usuario_sistema WHERE id_usuario = :id";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['id' => $id]);
-        $usuario = $stmt->fetch();
-        if ($usuario !== false) {
-            $usuario['permisos'] = $this->getPermisos((int)$usuario['id_rol']);
-        }
-        return $usuario;
+        return $stmt->fetch();
     }
 
     public function findByEmail(string $email): array|false
@@ -25,21 +21,7 @@ class UsuarioSistemaModel extends BaseDbModel
         $sql = "SELECT * FROM usuario_sistema WHERE email = :email";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['email' => $email]);
-        $usuario = $stmt->fetch();
-        return $usuario;
-    }
-
-    public function getPermisos(int $id_rol): array
-    {
-        if ($id_rol == 1) {
-            $permisos = ['proveedor' => 'rwd'];
-        } elseif ($id_rol == 2) {
-            $permisos = ['proveedor' => 'r'];
-        } elseif ($id_rol == 3) {
-            $permisos = ['proveedor' => 'rwd'];
-        }
-
-        return $permisos;
+        return $stmt->fetch();
     }
 
     public function changePassword(int $id, string $password): bool
