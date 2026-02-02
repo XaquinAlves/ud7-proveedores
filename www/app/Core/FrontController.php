@@ -26,6 +26,8 @@ class FrontController
                 } catch (JWTException $e) {
                     header('HTTP/1.1 403 Forbidden, ' . $e->getMessage(), true, 403);
                 }
+            } else {
+                self::$user['permisos'] = [];
             }
             Route::add('/login', function () {
                 (new UsuarioSistemaController())->login();
@@ -65,6 +67,11 @@ class FrontController
                     http_response_code(403);
                 }
             }, 'patch');
+            Route::add('/change-password', function () {
+                if (isset(self::$user['id_usuario'])) {
+                    (new UsuarioSistemaController())->changePassword();
+                }
+            }, 'put');
             Route::pathNotFound(
                 function () {
                     http_response_code(404);

@@ -5,15 +5,20 @@ declare(strict_types=1);
 namespace Com\Daw2\Controllers;
 
 use Com\Daw2\Core\BaseController;
+use Com\Daw2\Core\FrontController;
 use Com\Daw2\Libraries\JWTHelper;
 use Com\Daw2\Libraries\Respuesta;
 use Com\Daw2\Models\UsuarioSistemaModel;
+use Com\Daw2\Traits\BaseRestController;
 
 class UsuarioSistemaController extends BaseController
 {
+    use BaseRestController;
+
     private const ID_ADMIN = 1;
     private const ID_AUDITOR = 2;
     private const ID_FACTURACION = 3;
+
     public function login(): void
     {
         if (!empty($_POST['email']) && !empty($_POST['password'])) {
@@ -44,12 +49,51 @@ class UsuarioSistemaController extends BaseController
     {
         $permisos = [];
         if ($id_rol === self::ID_ADMIN) {
-            $permisos = ['proveedor.get', 'proveedor.post', 'proveedor.patch', 'proveedor.put' , 'proveedor.delete'];
+            $permisos = ['proveedor.get', 'proveedor.post', 'proveedor.patch', 'proveedor.put', 'proveedor.delete'];
         } elseif ($id_rol === self::ID_AUDITOR) {
             $permisos = ['proveedor.get'];
         } elseif ($id_rol === self::ID_FACTURACION) {
             $permisos = ['proveedor.get', 'proveedor.post', 'proveedor.patch'];
         }
         return $permisos;
+    }
+
+    public function changePassword(): void
+    {
+        $put = $this->getParams();
+        $errors = [];
+
+
+        if (empty($put['old_password'])) {
+            $errors['old_password'] = 'La contraseña antigua no puede estar vacía';
+        } else {
+            $model = new UsuarioSistemaModel();
+            $usuario = $model->findById(FrontController::$user['id_usuario']);
+
+            if ($usuario === false) {
+                throw new \Exception('Usuario no encontrado');
+            } else {
+                if (!password_verify($put['old_password'], $usuario['pass'])) {
+                    $errors['old_password'] = "La contraseña antigua no coincide con la guardada";
+                } elseif (empty($put['new_password'])) {
+                    $errors['new_password'] = "La nueva contraseña no puede estar vacía";
+                } elseif (!preg_match('/^(?=.*[a-z])(?=.*\d).{8,}$/', $put['new_password'])) {
+                    $errors['new_password'] = "La contraseña debe ser de al menos 8 caracteres y contener al menos 1 
+                letra y 1 numero";
+                }
+            }
+        }
+
+        if ($errors === []) {
+            $model->changePassword(array_merge($put, ['id_usuario' => FrontController::$user['id_usuario']]));
+        } else {
+            if (isset($errors['old_password'])) {
+                $respuesta = new Respuesta(403);
+                $respuesta->setData(['mensaje' => $errors['old_password']]);
+            } else {
+                $respuesta = new Respuesta(400);
+                $respuesta->setData(['errores' => $errors]);
+            }
+        }
     }
 }
