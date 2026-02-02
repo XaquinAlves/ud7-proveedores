@@ -109,14 +109,24 @@ class ProveedorController extends BaseController
             $respuesta->setData(['errores' => $errors]);
         } else {
             $model = new ProveedorModel();
-            if ($model->updateProveedor($cif, $patch)) {
-                $respuesta = new Respuesta(200);
-                $respuesta->setData(['mensaje' => 'Proveedor ' . $cif . ' actualizado correctamente']);
-            } else {
-                $respuesta = new Respuesta(404);
-                $respuesta->setData(['mensaje' => 'Proveedor ' . $cif . ' no encontrado']);
+            try {
+                if ($model->updateProveedor($cif, $patch)) {
+                    $respuesta = new Respuesta(200);
+                    $respuesta->setData(['mensaje' => 'Proveedor ' . $cif . ' actualizado correctamente']);
+                } else {
+                    $respuesta = new Respuesta(404);
+                    $respuesta->setData(['mensaje' => 'Proveedor ' . $cif . ' no encontrado']);
+                }
+            } catch (\PDOException $e) {
+                if ($e->getCode() === 23000) {
+                    $respuesta = new Respuesta(409);
+                    $respuesta->setData(['mensaje' => 'Ya existe un proveedor con ese codigo o cif']);
+                } else {
+                    throw $e;
+                }
             }
         }
+        $this->view->show('json.view.php', ['respuesta' => $respuesta]);
     }
 
     public function postProveedor(): void
@@ -130,6 +140,7 @@ class ProveedorController extends BaseController
                 $model = new ProveedorModel();
                 $cif = $model->insertProveedor($_POST);
                 $respuesta = new Respuesta(201);
+                $respuesta->setData(['cif' => $cif]);
             }
         } catch (\PDOException $e) {
             if ($e->getCode() === 23000) {
@@ -149,7 +160,9 @@ class ProveedorController extends BaseController
         $model = new ProveedorModel();
 
         if (empty($data['cif'])) {
-            $errors['cif'] = 'El cif es obligatorio';
+            if ($cif === null) {
+                $errors['cif'] = 'El cif es obligatorio';
+            }
         } elseif (preg_match('/^[A-Z][0-9]{7}[A-Z]$/ui', $data['cif']) === false) {
             $errors['cif'] = 'El cif debe tener el formato L1234567L';
         } else {
@@ -161,7 +174,9 @@ class ProveedorController extends BaseController
         }
 
         if (empty($data['codigo'])) {
-            $errors['codigo'] = 'El codigo es obligatorio';
+            if ($cif === null) {
+                $errors['codigo'] = 'El codigo es obligatorio';
+            }
         } elseif (preg_match('/.{5,10}/ui', $data['codigo']) === false) {
             $errors['codigo'] = 'El codigo debe tener entre 5 y 10 caracteres';
         } else {
@@ -173,19 +188,25 @@ class ProveedorController extends BaseController
         }
 
         if (empty($data['nombre'])) {
-            $errors['nombre'] = 'El nombre es obligatorio';
+            if ($cif === null) {
+                $errors['nombre'] = 'El nombre es obligatorio';
+            }
         } elseif (mb_strlen($data['nombre']) > 255) {
             $errors['nombre'] = 'El nombre debe tener un máximo de 255 caracteres';
         }
 
         if (empty($data['direccion'])) {
-            $errors['direccion'] = 'La direccion es obligatoria';
+            if ($cif === null) {
+                $errors['direccion'] = 'La direccion es obligatoria';
+            }
         } elseif (mb_strlen($data['direccion']) > 255) {
             $errors['direccion'] = 'La direccion debe tener un máximo de 255 caracteres';
         }
 
         if (empty($data['web'])) {
-            $errors['web'] = 'La web es obligatoria';
+            if ($cif === null) {
+                $errors['web'] = 'La web es obligatoria';
+            }
         } elseif (mb_strlen($data['web']) > 255) {
             $errors['web'] = 'La web debe tener un máximo de 255 caracteres';
         } elseif (filter_var($data['web'], FILTER_VALIDATE_URL) === false) {
@@ -193,8 +214,10 @@ class ProveedorController extends BaseController
         }
 
         if (empty($data['email'])) {
-            $errors['email'] = 'Email es obligatoria';
-        } elseif (mb_strlen($data['email']) > 255) {
+            if ($cif === null) {
+                $errors['email'] = 'El email es obligatorio';
+            }
+        } elseif (mb_strlen($data['email'])  > 255) {
             $errors['web'] = 'El email debe tener un máximo de 255 caracteres';
         } elseif (filter_var($data['email'], FILTER_VALIDATE_EMAIL) === false) {
             $errors['web'] = 'El email debe tener un formato correcto de email';
@@ -207,7 +230,9 @@ class ProveedorController extends BaseController
         }
 
         if (empty($data['pais'])) {
-            $errors['pais'] = 'El pais es obligatorio';
+            if ($cif === null) {
+                $errors['pais'] = 'El pais es obligatorio';
+            }
         } elseif (!filter_var($data['pais'], FILTER_VALIDATE_INT)) {
             $errors['pais'] = 'El pais debe ser un numero entero positivo correspondiente al id_pais';
         } elseif (!((new AuxCountriesModel())->existsCountry((int)$data['pais']))) {

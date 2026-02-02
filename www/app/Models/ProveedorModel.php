@@ -119,7 +119,8 @@ class ProveedorModel extends BaseDbModel
             $sql .= "SET " . implode(', ', $conditions) . ' WHERE cif = :cifViejo ';
             $params['cifViejo'] = $cif;
             $stmt = $this->pdo->prepare($sql);
-            return $stmt->execute($params);
+            $stmt->execute($params);
+            return $stmt->rowCount() > 0;
         } else {
             return true;
         }
