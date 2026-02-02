@@ -150,7 +150,7 @@ class ProveedorController extends BaseController
 
         if (empty($data['cif'])) {
             $errors['cif'] = 'El cif es obligatorio';
-        } elseif (preg_match('/^[A-Z][0-9]{7}[A-Z]$/ìu', $data['cif']) === false) {
+        } elseif (preg_match('/^[A-Z][0-9]{7}[A-Z]$/ui', $data['cif']) === false) {
             $errors['cif'] = 'El cif debe tener el formato L1234567L';
         } else {
             if (($cif !== null && $cif !== $data['cif']) || $cif === null) {
@@ -162,7 +162,7 @@ class ProveedorController extends BaseController
 
         if (empty($data['codigo'])) {
             $errors['codigo'] = 'El codigo es obligatorio';
-        } elseif (preg_match('/.{5,10}/iu', $data['codigo']) === false) {
+        } elseif (preg_match('/.{5,10}/ui', $data['codigo']) === false) {
             $errors['codigo'] = 'El codigo debe tener entre 5 y 10 caracteres';
         } else {
             if ($model->getProveedorByCodigo($data['codigo']) !== false) {
@@ -186,7 +186,7 @@ class ProveedorController extends BaseController
 
         if (empty($data['web'])) {
             $errors['web'] = 'La web es obligatoria';
-        } elseif (mb_strlen($data['web'] > 255)) {
+        } elseif (mb_strlen($data['web']) > 255) {
             $errors['web'] = 'La web debe tener un máximo de 255 caracteres';
         } elseif (filter_var($data['web'], FILTER_VALIDATE_URL) === false) {
             $errors['web'] = 'La web debe ser una url valida';
@@ -194,14 +194,14 @@ class ProveedorController extends BaseController
 
         if (empty($data['email'])) {
             $errors['email'] = 'Email es obligatoria';
-        } elseif (mb_strlen($data['email'] > 255)) {
+        } elseif (mb_strlen($data['email']) > 255) {
             $errors['web'] = 'El email debe tener un máximo de 255 caracteres';
         } elseif (filter_var($data['email'], FILTER_VALIDATE_EMAIL) === false) {
             $errors['web'] = 'El email debe tener un formato correcto de email';
         }
 
         if (!empty($data['telefono'])) {
-            if (preg_match('/([0-9]{9})|([0-9]{12})/iu', $data['telefono']) === false) {
+            if (preg_match('/([0-9]{9})|([0-9]{12})/ui', $data['telefono']) === false) {
                 $errors['telefono'] = 'El telefono debe tener 9 o 12 digitos';
             }
         }

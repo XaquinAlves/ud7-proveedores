@@ -56,7 +56,17 @@ class ProveedorModel extends BaseDbModel
         $sql = "INSERT INTO proveedor (cif, codigo, nombre, direccion, website, email, telefono, id_country)
             VALUES (:cif, :codigo, :nombre, :direccion, :website, :email, :telefono, :id_country)";
         $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute($data);
+        $params = [
+            'cif' => $data['cif'],
+            'codigo' => $data['codigo'],
+            'nombre' => $data['nombre'],
+            'direccion' => $data['direccion'],
+            'website' => $data['web'],
+            'email' => $data['email'],
+            'telefono' => $data['telefono'] ?? null,
+            'id_country' => $data['pais']
+        ];
+        return $stmt->execute($params);
     }
 
     public function updateProveedor(string $cif, array $data): bool
