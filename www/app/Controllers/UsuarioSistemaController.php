@@ -21,7 +21,11 @@ class UsuarioSistemaController extends BaseController
                 $respuesta = new Respuesta(403);
             } elseif (password_verify($_POST['password'], $usuario['pass'])) {
                 $respuesta = new Respuesta(200);
-                $payload = ['id_usuario' => $usuario['id_usuario']];
+                $payload = [
+                    'id_usuario' => $usuario['id_usuario'],
+                    'id_rol' => $usuario['id_rol'],
+                    'idioma' => 'es'
+                ];
                 $token = (new JWTHelper())->getToken($payload);
                 $respuesta->setData(['token' => $token]);
             } else {
