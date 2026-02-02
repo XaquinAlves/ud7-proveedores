@@ -12,13 +12,13 @@ class JWTHelper
     private const ALGO = 'HS256';
     private const EXPIRATION = 1800;
     private const LEEWAY = 10;
-    public function decodeToken(string $token)
+    public static function decodeToken(string $token)
     {
         $jwt = new JWT(self::SECRET, self::ALGO, self::EXPIRATION, self::LEEWAY);
         return $jwt->decode($token);
     }
 
-    public function getToken(array $payload)
+    public static function getToken(array $payload)
     {
         $jwt = new JWT(self::SECRET, self::ALGO, self::EXPIRATION, self::LEEWAY);
         return $jwt->encode($payload);

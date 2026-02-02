@@ -20,8 +20,8 @@ class FrontController
         if (JwtTool::requestHasToken()) {
             try {
                 $token = JwtTool::getBearerToken();
-                $payload = (new JWTHelper())->decodeToken($token);
-                self::$user = (new UsuarioSistemaModel())->findById($payload['id_usuario']);
+                self::$user = JWTHelper::decodeToken($token);
+                self::$user['permisos'] = UsuarioSistemaController::getPermisos(self::$user['id_usuario']);
             } catch (JWTException $e) {
                 header('HTTP/1.1 403 Forbidden, ' . $e->getMessage(), true, 403);
             }
@@ -31,7 +31,7 @@ class FrontController
         }, 'post');
 
         Route::add('/proveedor', function () {
-            if (self::$user !== false && str_contains(self::$user['permisos']['proveedor'], 'r')) {
+            if (in_array('proveedor.get', self::$user['permisos'])) {
                 (new ProveedorController())->getProveedorByFilters();
             } else {
                 http_response_code(403);
@@ -39,7 +39,7 @@ class FrontController
         }, 'get');
 
         Route::add('/proveedor/([A-Z][0-9]{7}[A-Z])', function ($cif) {
-            if (self::$user !== false && str_contains(self::$user['permisos']['proveedor'], 'r')) {
+            if (in_array('proveedor.get', self::$user['permisos'])) {
                 (new ProveedorController())->getProveedorByCif($cif);
             } else {
                 http_response_code(403);
@@ -47,7 +47,7 @@ class FrontController
         }, 'get');
 
         Route::add('/proveedor', function () {
-            if (self::$user !== false && str_contains(self::$user['permisos']['proveedor'], 'w')) {
+            if (in_array('proveedor.post', self::$user['permisos'])) {
                 (new ProveedorController())->postProveedor();
             } else {
                 http_response_code(403);
@@ -55,7 +55,7 @@ class FrontController
         }, 'post');
 
         Route::add('/proveedor/([A-Z][0-9]{7}[A-Z])', function ($cif) {
-            if (self::$user !== false && str_contains(self::$user['permisos']['proveedor'], 'd')) {
+            if (in_array('proveedor.delete', self::$user['permisos'])) {
                 (new ProveedorController())->deleteProveedor($cif);
             } else {
                 http_response_code(403);
@@ -63,7 +63,7 @@ class FrontController
         }, 'delete');
 
         Route::add('/proveedor/([A-Z][0-9]{7}[A-Z])', function ($cif) {
-            if (self::$user !== false && str_contains(self::$user['permisos']['proveedor'], 'w')) {
+            if (in_array('proveedor.patch', self::$user['permisos'])) {
                 (new ProveedorController())->patchProveedor($cif);
             } else {
                 http_response_code(403);
