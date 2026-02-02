@@ -42,13 +42,13 @@ class UsuarioSistemaModel extends BaseDbModel
         return $permisos;
     }
 
-    public function changePassword(array $data): bool
+    public function changePassword(int $id, string $password): bool
     {
-        $sql = "UPDATE usuario_sistema SET password = :password WHERE id_usuario = :id";
+        $sql = "UPDATE usuario_sistema SET pass = :password WHERE id_usuario = :id";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
-            'password' => password_hash($data['new_password'], PASSWORD_DEFAULT),
-            'id' => $data['id_usuario']
+            'password' => password_hash($password, PASSWORD_DEFAULT),
+            'id' => $id
         ]);
 
         if ($stmt->rowCount() > 0) {

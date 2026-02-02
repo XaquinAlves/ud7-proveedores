@@ -62,13 +62,11 @@ class UsuarioSistemaController extends BaseController
     {
         $put = $this->getParams();
         $errors = [];
-
-
+        $model = new UsuarioSistemaModel();
         if (empty($put['old_password'])) {
             $errors['old_password'] = 'La contraseña antigua no puede estar vacía';
         } else {
-            $model = new UsuarioSistemaModel();
-            $usuario = $model->findById(FrontController::$user['id_usuario']);
+            $usuario = $model->findById((int)FrontController::$user['id_usuario']);
 
             if ($usuario === false) {
                 throw new \Exception('Usuario no encontrado');
@@ -85,7 +83,11 @@ class UsuarioSistemaController extends BaseController
         }
 
         if ($errors === []) {
-            $model->changePassword(array_merge($put, ['id_usuario' => FrontController::$user['id_usuario']]));
+            if ($model->changePassword((int)FrontController::$user['id_usuario'], $put['new_password'])) {
+                $respuesta = new Respuesta(200);
+            } else {
+                $respuesta = new Respuesta(500);
+            }
         } else {
             if (isset($errors['old_password'])) {
                 $respuesta = new Respuesta(403);
@@ -95,5 +97,7 @@ class UsuarioSistemaController extends BaseController
                 $respuesta->setData(['errores' => $errors]);
             }
         }
+
+        $this->view->show('json.view.php', ['respuesta' => $respuesta]);
     }
 }
