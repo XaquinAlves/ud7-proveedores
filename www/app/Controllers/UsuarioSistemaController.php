@@ -62,10 +62,11 @@ class UsuarioSistemaController extends BaseController
     {
         $put = $this->getParams();
         $errors = [];
-        $model = new UsuarioSistemaModel();
+
         if (empty($put['old_password'])) {
             $errors['old_password'] = 'La contraseña antigua no puede estar vacía';
         } else {
+            $model = new UsuarioSistemaModel();
             $usuario = $model->findById($id_usuario);
 
             if ($usuario === false) {
