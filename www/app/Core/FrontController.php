@@ -69,7 +69,7 @@ class FrontController
             }, 'patch');
             Route::add('/change-password', function () {
                 if (isset(self::$user['id_usuario'])) {
-                    (new UsuarioSistemaController())->changePassword();
+                    (new UsuarioSistemaController())->changePassword((int)self::$user['id_usuario']);
                 }
             }, 'put');
             Route::pathNotFound(
